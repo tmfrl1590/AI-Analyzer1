@@ -15,10 +15,10 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isQuotaError, setIsQuotaError] = useState<boolean>(false);
 
-  // TODO: 여기에 실제 구글 애드센스 정보를 입력하고 IS_TEST_MODE를 false로 변경하세요.
-  const AD_CLIENT_ID = "ca-pub-XXXXXXXXXXXXXXXX"; 
-  const AD_SLOT_ID = "1234567890"; 
-  const IS_TEST_MODE = true; // 실제 광고를 보려면 false로 변경하세요.
+  // 구글 애드센스 설정
+  const AD_CLIENT_ID = "ca-pub-3991873148102758"; 
+  const AD_SLOT_ID = "5562542114"; 
+  const IS_TEST_MODE = false; // 실제 광고 송출 모드
 
   const handleImageSelect = useCallback(async (base64Image: string) => {
     setSelectedImage(base64Image);
