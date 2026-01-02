@@ -1,13 +1,19 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { FoodAnalysisResult } from "../types";
 
-// Initialize Gemini Client
-// Requires process.env.API_KEY to be set
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 const modelId = "gemini-3-flash-preview";
 
 export const analyzeImage = async (base64Image: string): Promise<FoodAnalysisResult> => {
+  // Initialize Gemini Client inside the function
+  // This prevents the application from crashing on startup if the API key is missing
+  const apiKey = process.env.API_KEY;
+  
+  if (!apiKey) {
+    throw new Error("API Key가 설정되지 않았습니다. Vercel 환경 변수를 확인해주세요.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
+
   // Remove data URL prefix if present (e.g., "data:image/jpeg;base64,")
   const base64Data = base64Image.split(',')[1] || base64Image;
 
