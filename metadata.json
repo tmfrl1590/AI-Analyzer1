@@ -1,0 +1,7 @@
+{
+  "name": "Copy of NutriVision AI",
+  "description": "Upload food images to instantly analyze calories and macronutrients using Gemini AI.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
