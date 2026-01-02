@@ -10,7 +10,7 @@ export const Header: React.FC = () => {
             <Utensils className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-            NutriVision AI
+            AI 칼로리 분석
           </span>
         </div>
       </div>

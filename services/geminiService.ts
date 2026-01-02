@@ -6,13 +6,11 @@ const modelId = "gemini-3-flash-preview";
 // Helper function to safely get API Key from various environment configurations
 const getApiKey = (): string | undefined => {
   // 1. Try Vite standard (import.meta.env.VITE_API_KEY)
-  // Casting to 'any' to avoid TypeScript errors if types aren't set up for Vite
   if ((import.meta as any).env?.VITE_API_KEY) {
     return (import.meta as any).env.VITE_API_KEY;
   }
   
   // 2. Try Standard/Legacy (process.env.API_KEY)
-  // Checking typeof process to avoid 'process is not defined' errors in some browsers
   if (typeof process !== 'undefined' && process.env?.API_KEY) {
     return process.env.API_KEY;
   }
@@ -48,7 +46,7 @@ export const analyzeImage = async (base64Image: string): Promise<FoodAnalysisRes
         parts: [
           {
             inlineData: {
-              mimeType: "image/jpeg", // Assuming JPEG for simplicity, but works with PNG
+              mimeType: "image/jpeg", 
               data: base64Data
             }
           },
@@ -100,8 +98,15 @@ export const analyzeImage = async (base64Image: string): Promise<FoodAnalysisRes
     const data = JSON.parse(resultText) as FoodAnalysisResult;
     return data;
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini API Error:", error);
+    
+    // Check for Quota Exceeded (429) or Service Unavailable (503)
+    const errorMessage = error.message || error.toString();
+    if (errorMessage.includes('429') || errorMessage.includes('Resource has been exhausted')) {
+        throw new Error("QUOTA_EXCEEDED");
+    }
+    
     throw error;
   }
 };
