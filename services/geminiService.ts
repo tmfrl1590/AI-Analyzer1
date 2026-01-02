@@ -55,9 +55,8 @@ export const analyzeImage = async (base64Image: string): Promise<FoodAnalysisRes
             1. 음식 이름과 추정 칼로리, 탄단지(g)
             2. 건강 팁 (한 문장)
             3. 주요 재료
-            4. **건강 점수**: 영양 균형을 고려하여 100점 만점 기준으로 점수를 매겨주세요. (예: 샐러드 90점, 피자 40점)
-            5. **스마트 태그**: 음식의 특징을 나타내는 태그 3~5개 (예: #고단백, #다이어트, #나트륨주의, #치팅데이)
-            6. **운동 환산**: 이 칼로리를 소모하기 위해 필요한 운동 시간(분)을 계산해주세요. (걷기, 달리기, 자전거 타기)
+            4. **스마트 태그**: 음식의 특징을 나타내는 태그 3~5개 (예: #고단백, #다이어트, #나트륨주의, #치팅데이)
+            5. **운동 환산**: 이 칼로리를 소모하기 위해 필요한 운동 시간(분)을 계산해주세요. (걷기, 달리기, 자전거 타기)
             
             이미지에 음식이 없다면 isFood: false로 반환하세요.
             모든 텍스트는 한국어로 출력하세요.`
@@ -83,7 +82,6 @@ export const analyzeImage = async (base64Image: string): Promise<FoodAnalysisRes
             healthTip: { type: Type.STRING, description: "건강 팁" },
             ingredients: { type: Type.ARRAY, items: { type: Type.STRING } },
             isFood: { type: Type.BOOLEAN },
-            healthScore: { type: Type.NUMBER, description: "0~100 사이의 건강 점수" },
             tags: { type: Type.ARRAY, items: { type: Type.STRING }, description: "음식 특징 태그 (예: #고단백)" },
             exercise: {
               type: Type.OBJECT,
@@ -95,7 +93,7 @@ export const analyzeImage = async (base64Image: string): Promise<FoodAnalysisRes
               required: ["walking", "running", "cycling"]
             }
           },
-          required: ["foodName", "totalCalories", "macros", "healthTip", "isFood", "ingredients", "healthScore", "tags", "exercise"],
+          required: ["foodName", "totalCalories", "macros", "healthTip", "isFood", "ingredients", "tags", "exercise"],
         }
       }
     });

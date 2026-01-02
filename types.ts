@@ -17,8 +17,6 @@ export interface FoodAnalysisResult {
   healthTip: string;
   isFood: boolean;
   ingredients: string[];
-  // New fields
-  healthScore: number; // 0 to 100
   tags: string[]; // e.g., ["High Protein", "Low Carb"]
   exercise: ExerciseEquivalent;
 }

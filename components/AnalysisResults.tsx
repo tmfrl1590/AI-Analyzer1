@@ -17,15 +17,6 @@ export const AnalysisResults: React.FC<AnalysisResultsProps> = ({ result, onRese
     { name: '지방', value: result.macros.fat },
   ];
 
-  // 건강 점수 스타일링 헬퍼
-  const getScoreStyles = (score: number) => {
-    if (score >= 80) return { bg: 'bg-emerald-50', text: 'text-emerald-600', label: 'text-emerald-700/80' };
-    if (score >= 50) return { bg: 'bg-amber-50', text: 'text-amber-600', label: 'text-amber-700/80' };
-    return { bg: 'bg-red-50', text: 'text-red-500', label: 'text-red-700/80' };
-  };
-
-  const scoreStyle = getScoreStyles(result.healthScore);
-
   return (
     <div className="flex flex-col animate-fade-in">
       
@@ -57,17 +48,8 @@ export const AnalysisResults: React.FC<AnalysisResultsProps> = ({ result, onRese
         </div>
       </div>
 
-      {/* 2. Key Metrics Grid (Score + Macros) */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {/* Health Score */}
-        <div className={`rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3] md:aspect-auto ${scoreStyle.bg}`}>
-          <span className={`text-sm font-semibold mb-2 ${scoreStyle.label}`}>건강 점수</span>
-          <span className={`text-4xl md:text-5xl font-black ${scoreStyle.text} mb-1`}>
-            {result.healthScore}
-          </span>
-          <span className="text-[10px] font-medium opacity-60 text-slate-900">100점 만점</span>
-        </div>
-
+      {/* 2. Key Metrics Grid (Macros Only) */}
+      <div className="grid grid-cols-3 gap-4 mb-8">
         {/* Protein */}
         <div className="bg-blue-50 rounded-2xl p-5 flex flex-col items-center justify-center text-center aspect-[4/3] md:aspect-auto">
           <span className="text-sm font-semibold text-blue-600/80 mb-2">단백질</span>
