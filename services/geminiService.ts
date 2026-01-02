@@ -51,13 +51,16 @@ export const analyzeImage = async (base64Image: string): Promise<FoodAnalysisRes
             }
           },
           {
-            text: `이 이미지를 분석하여 어떤 음식인지 식별해 주세요.
-            보여지는 양을 기준으로 총 칼로리와 다량 영양소(단백질, 탄수화물, 지방)를 추정해 주세요.
-            이 음식에 대한 건강 팁을 한 문장으로 제공해 주세요.
-            예상되는 주요 재료 목록을 작성해 주세요.
-            이미지에 음식이 포함되어 있지 않다면 'isFood'를 false로 설정하고 다른 필드는 null 또는 0으로 설정해 주세요.
+            text: `이 이미지를 분석하여 다음 정보를 제공해주세요:
+            1. 음식 이름과 추정 칼로리, 탄단지(g)
+            2. 건강 팁 (한 문장)
+            3. 주요 재료
+            4. **건강 점수**: 영양 균형을 고려하여 100점 만점 기준으로 점수를 매겨주세요. (예: 샐러드 90점, 피자 40점)
+            5. **스마트 태그**: 음식의 특징을 나타내는 태그 3~5개 (예: #고단백, #다이어트, #나트륨주의, #치팅데이)
+            6. **운동 환산**: 이 칼로리를 소모하기 위해 필요한 운동 시간(분)을 계산해주세요. (걷기, 달리기, 자전거 타기)
             
-            중요: foodName, healthTip, ingredients 등 모든 텍스트 값은 반드시 '한국어(Korean)'로 출력해야 합니다.`
+            이미지에 음식이 없다면 isFood: false로 반환하세요.
+            모든 텍스트는 한국어로 출력하세요.`
           }
         ]
       },
@@ -71,21 +74,28 @@ export const analyzeImage = async (base64Image: string): Promise<FoodAnalysisRes
             macros: {
               type: Type.OBJECT,
               properties: {
-                protein: { type: Type.NUMBER, description: "단백질 함량 (g)" },
-                carbs: { type: Type.NUMBER, description: "탄수화물 함량 (g)" },
-                fat: { type: Type.NUMBER, description: "지방 함량 (g)" },
+                protein: { type: Type.NUMBER, description: "단백질 (g)" },
+                carbs: { type: Type.NUMBER, description: "탄수화물 (g)" },
+                fat: { type: Type.NUMBER, description: "지방 (g)" },
               },
               required: ["protein", "carbs", "fat"],
             },
-            healthTip: { type: Type.STRING, description: "음식에 대한 한 문장 건강 팁 (한국어)" },
-            ingredients: { 
-              type: Type.ARRAY, 
-              items: { type: Type.STRING },
-              description: "주요 재료 목록 (한국어)"
-            },
-            isFood: { type: Type.BOOLEAN, description: "음식 감지 여부" },
+            healthTip: { type: Type.STRING, description: "건강 팁" },
+            ingredients: { type: Type.ARRAY, items: { type: Type.STRING } },
+            isFood: { type: Type.BOOLEAN },
+            healthScore: { type: Type.NUMBER, description: "0~100 사이의 건강 점수" },
+            tags: { type: Type.ARRAY, items: { type: Type.STRING }, description: "음식 특징 태그 (예: #고단백)" },
+            exercise: {
+              type: Type.OBJECT,
+              properties: {
+                walking: { type: Type.NUMBER, description: "걷기 소요 시간 (분)" },
+                running: { type: Type.NUMBER, description: "달리기 소요 시간 (분)" },
+                cycling: { type: Type.NUMBER, description: "자전거 타기 소요 시간 (분)" },
+              },
+              required: ["walking", "running", "cycling"]
+            }
           },
-          required: ["foodName", "totalCalories", "macros", "healthTip", "isFood", "ingredients"],
+          required: ["foodName", "totalCalories", "macros", "healthTip", "isFood", "ingredients", "healthScore", "tags", "exercise"],
         }
       }
     });
@@ -101,7 +111,6 @@ export const analyzeImage = async (base64Image: string): Promise<FoodAnalysisRes
   } catch (error: any) {
     console.error("Gemini API Error:", error);
     
-    // Check for Quota Exceeded (429) or Service Unavailable (503)
     const errorMessage = error.message || error.toString();
     if (errorMessage.includes('429') || errorMessage.includes('Resource has been exhausted')) {
         throw new Error("QUOTA_EXCEEDED");

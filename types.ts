@@ -4,6 +4,12 @@ export interface Macronutrients {
   fat: number;
 }
 
+export interface ExerciseEquivalent {
+  walking: number; // minutes
+  running: number; // minutes
+  cycling: number; // minutes
+}
+
 export interface FoodAnalysisResult {
   foodName: string;
   totalCalories: number;
@@ -11,4 +17,8 @@ export interface FoodAnalysisResult {
   healthTip: string;
   isFood: boolean;
   ingredients: string[];
+  // New fields
+  healthScore: number; // 0 to 100
+  tags: string[]; // e.g., ["High Protein", "Low Carb"]
+  exercise: ExerciseEquivalent;
 }
