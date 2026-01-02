@@ -15,6 +15,11 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isQuotaError, setIsQuotaError] = useState<boolean>(false);
 
+  // TODO: 여기에 실제 구글 애드센스 정보를 입력하세요.
+  const AD_CLIENT_ID = "ca-pub-XXXXXXXXXXXXXXXX"; // 예: ca-pub-1234567890123456
+  const AD_SLOT_ID = "1234567890"; // 디스플레이 광고 단위 ID
+  const IS_TEST_MODE = true; // 배포 전 실제 광고를 띄우려면 false로 변경하세요.
+
   const handleImageSelect = useCallback(async (base64Image: string) => {
     setSelectedImage(base64Image);
     setAnalysisResult(null);
@@ -120,9 +125,17 @@ const App: React.FC = () => {
               </div>
             </div>
           )}
-          
-          {/* 광고 배너 영역 */}
-          <AdBanner />
+
+          {/* 하단 광고 배너 영역 */}
+          <div className="mt-8">
+            <AdBanner 
+              client={AD_CLIENT_ID} 
+              slot={AD_SLOT_ID} 
+              isTestMode={IS_TEST_MODE} 
+              format="auto"
+              className="w-full"
+            />
+          </div>
         </div>
       </main>
 
