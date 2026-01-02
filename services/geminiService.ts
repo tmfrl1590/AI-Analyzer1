@@ -3,13 +3,37 @@ import { FoodAnalysisResult } from "../types";
 
 const modelId = "gemini-3-flash-preview";
 
+// Helper function to safely get API Key from various environment configurations
+const getApiKey = (): string | undefined => {
+  // 1. Try Vite standard (import.meta.env.VITE_API_KEY)
+  // Casting to 'any' to avoid TypeScript errors if types aren't set up for Vite
+  if ((import.meta as any).env?.VITE_API_KEY) {
+    return (import.meta as any).env.VITE_API_KEY;
+  }
+  
+  // 2. Try Standard/Legacy (process.env.API_KEY)
+  // Checking typeof process to avoid 'process is not defined' errors in some browsers
+  if (typeof process !== 'undefined' && process.env?.API_KEY) {
+    return process.env.API_KEY;
+  }
+
+  return undefined;
+};
+
 export const analyzeImage = async (base64Image: string): Promise<FoodAnalysisResult> => {
   // Initialize Gemini Client inside the function
-  // This prevents the application from crashing on startup if the API key is missing
-  const apiKey = process.env.API_KEY;
+  const apiKey = getApiKey();
   
   if (!apiKey) {
-    throw new Error("API Key가 설정되지 않았습니다. Vercel 환경 변수를 확인해주세요.");
+    console.error("API Key Missing. Checked VITE_API_KEY and API_KEY.");
+    throw new Error(
+      "API Key가 설정되지 않았습니다.\n\n" +
+      "Vercel 배포 시 해결 방법:\n" +
+      "1. Vercel 대시보드 > Settings > Environment Variables 이동\n" +
+      "2. Key 이름을 'VITE_API_KEY'로 변경 (또는 새로 추가)\n" +
+      "3. Value에 API 키 입력\n" +
+      "4. Deployments 탭에서 최신 배포 'Redeploy' 실행"
+    );
   }
 
   const ai = new GoogleGenAI({ apiKey });
